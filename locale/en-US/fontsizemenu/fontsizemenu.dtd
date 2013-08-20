@@ -1,0 +1,13 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<!ENTITY menu.label     "Font Size">
+<!ENTITY menu.accesskey "F">
+
+<!ENTITY menu.large.label      "Large">
+<!ENTITY menu.large.accesskey  "L">
+<!ENTITY menu.medium.label     "Medium">
+<!ENTITY menu.medium.accesskey "M">
+<!ENTITY menu.small.label      "Small">
+<!ENTITY menu.small.accesskey  "S">
