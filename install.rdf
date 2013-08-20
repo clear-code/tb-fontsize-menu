@@ -8,7 +8,9 @@
                    em:version="1.0"
                    em:description="Provides &quot;font size&quot; menu for Thunderbird."
                    em:creator="ClearCode Inc."
-                   em:homepageURL="http://www.clear-code.com/">
+                   em:homepageURL="http://www.clear-code.com/"
+                   em:bootstrap="true"
+                   em:type="2">
 
     <!--em:updateURL></em:updateURL-->
     <!--em:updateKey></em:updateKey-->

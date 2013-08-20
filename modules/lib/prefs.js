@@ -19,9 +19,11 @@
    window['piro.sakura.ne.jp'].prefs.addPrefListener(listener);
    window['piro.sakura.ne.jp'].prefs.removePrefListener(listener);
 
- license: The MIT License, Copyright (c) 2009-2013 YUKI "Piro" Hiroshi
+ license: The MIT License, Copyright (c) 2009-2010 YUKI "Piro" Hiroshi
+   http://github.com/piroor/fxaddonlibs/blob/master/license.txt
  original:
-   http://github.com/piroor/fxaddonlib-prefs
+   http://github.com/piroor/fxaddonlibs/blob/master/prefs.js
+   http://github.com/piroor/fxaddonlibs/blob/master/prefs.test.js
 */
 
 /* To work as a JS Code Module  */
@@ -33,7 +35,7 @@ if (typeof window == 'undefined' ||
 	// See: http://github.com/piroor/fxaddonlibs/blob/master/namespace.jsm
 	try {
 		let ns = {};
-		Components.utils.import('resource://fontsizemenu-modules/namespace.jsm', ns);
+		Components.utils.import('resource://my-modules/namespace.jsm', ns);
 		/* var */ window = ns.getNamespaceFor('piro.sakura.ne.jp');
 	}
 	catch(e) {
@@ -42,7 +44,7 @@ if (typeof window == 'undefined' ||
 }
 
 (function() {
-	const currentRevision = 9;
+	const currentRevision = 8;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -138,28 +140,13 @@ if (typeof window == 'undefined' ||
 	 
 		getChildren : function(aRoot, aBranch) 
 		{
-			var foundChildren = {};
-			var possibleChildren = [];
-			var actualChildren = this.getDescendant(aRoot, aBranch)
-					.forEach(function(aPrefstring) {
+			return this.getDescendant(aRoot, aBranch)
+					.filter(function(aPrefstring) {
 						var name = aPrefstring.replace(aRoot, '');
 						if (name.charAt(0) == '.')
 							name = name.substring(1);
-						if (name.indexOf('.') < 0) {
-							if (!(aPrefstring in foundChildren)) {
-								actualChildren.push(aPrefstring);
-								foundChildren[aPrefstring] = true;
-							}
-						}
-						else {
-							let possibleChildKey = aRoot + name.split('.')[0];
-							if (possibleChildKey && !(possibleChildKey in foundChildren)) {
-								possibleChildren.push(possibleChildKey);
-								foundChildren[possibleChildKey] = true;
-							}
-						}
+						return name.indexOf('.') < 0;
 					});
-			return possibleChildren.concat(actualChildren).sort();
 		},
 	 
 		addPrefListener : function(aObserver) 
