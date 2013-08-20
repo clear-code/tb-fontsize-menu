@@ -53,5 +53,6 @@ var FontSizeMenu = {
 
   onCommand: function FontSizeMenu_onCommand(aEvent) {
     this.currentSize = this.getSize(aEvent.target.value);
+    ReloadMessage();
   }
 };
