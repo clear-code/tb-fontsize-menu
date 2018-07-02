@@ -1,10 +1,10 @@
 /**
  * @fileOverview Configuration dialog module for restartless addons
  * @author       YUKI "Piro" Hiroshi
- * @version      13
+ * @version      16
  *
  * @license
- *   The MIT License, Copyright (c) 2011-2014 YUKI "Piro" Hiroshi.
+ *   The MIT License, Copyright (c) 2011-2017 YUKI "Piro" Hiroshi.
  *   https://github.com/piroor/restartless/blob/master/license.txt
  * @url http://github.com/piroor/restartless
  */
@@ -127,7 +127,7 @@ var config = {
 			let root = aSource.copy();
 			delete root['*'];
 			let attributes = root.attributes();
-			for each (let attribute in attributes)
+			for (let attribute of aAttribute)
 			{
 				delete root['@'+attribute.name()];
 			}
@@ -155,7 +155,7 @@ var config = {
 			let xmlnses = root.match(/xmlns(:[^=]+)\s*=\s*('[^']*'|"[^"]*")/g);
 			root = root
 					.replace(/\s+[^ =]+\s*=\s*('[^']*'|"[^"]*")/g, '')
-					.replace(/(\/>)$/, ' ' + Array.slice(xmlnses).join(' ') + '$1')
+					.replace(/(\/>)$/, ' ' + [...xmlnses].join(' ') + '$1')
 		}
 
 		this._configs[this._resolveResURI(aURI)] = {
@@ -177,8 +177,8 @@ var config = {
 		range.selectNode(root);
 		var fragment = range.createContextualFragment(soruce);
 		// clear white-space nodes from XUL tree
-		(function(aNode) {
-			Array.slice(aNode.childNodes).forEach(arguments.callee);
+		(function processNode(aNode) {
+			[...aNode.childNodes].forEach(processNode);
 			if (aNode.parentNode &&
 				aNode.parentNode.namespaceURI == XULNS &&
 				aNode.nodeType == Ci.nsIDOMNode.TEXT_NODE &&
@@ -316,25 +316,29 @@ ObserverService.addObserver(config, 'content-document-global-created', false);
 
 var WindowMediator = Cc['@mozilla.org/appshell/window-mediator;1']
 						.getService(Ci.nsIWindowMediator)
-let (managers = WindowMediator.getEnumerator('Addons:Manager')) {
+{
+	let managers = WindowMediator.getEnumerator('Addons:Manager');
 	while (managers.hasMoreElements())
 	{
 		config._onLoadManager(managers.getNext().QueryInterface(Ci.nsIDOMWindow));
 	}
 }
-let (browsers = WindowMediator.getEnumerator('navigator:browser')) {
+{
+	let browsers = WindowMediator.getEnumerator('navigator:browser');
 	while (browsers.hasMoreElements())
 	{
 		let browser = browsers.getNext().QueryInterface(Ci.nsIDOMWindow);
-		if (browser.gBrowser)
-			Array.slice(browser.gBrowser.mTabContainer.childNodes)
-				.forEach(function(aTab) {
+		if (browser.gBrowser) {
+			for (let aTab of browser.gBrowser.mTabContainer.childNodes)
+			{
 				if (aTab.linkedBrowser.currentURI.spec == 'about:addons')
 					config._onLoadManager(aTab.linkedBrowser.contentWindow);
-			});
+			}
+		}
 	}
 }
-let (managers = WindowMediator.getEnumerator('Extension:Manager')) { // Firefox 3.6
+{
+	let managers = WindowMediator.getEnumerator('Extension:Manager'); // Firefox 3.6
 	while (managers.hasMoreElements())
 	{
 		config._onLoadManager(managers.getNext().QueryInterface(Ci.nsIDOMWindow));
